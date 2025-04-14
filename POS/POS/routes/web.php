@@ -40,8 +40,8 @@ Route::pattern('id', '[0-9]+');
 Route::get('login',[AuthController::class, 'login'])->name('login');
 Route::post('login',[AuthController::class, 'postlogin']);
 Route::get('logout',[AuthController::class, 'logout'])->middleware('auth');
-Route::get('register', [AuthController::class, 'register'])->name('register');
-Route::post('register', [AuthController::class, 'store_user']);
+Route::get('/register' , [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'postregister']);
 
 Route::middleware(['auth'])->group(function(){
 
