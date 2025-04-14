@@ -11,7 +11,7 @@ class PenjualanDetailSeeder extends Seeder
     {
         DB::table('t_penjualan_detail')->truncate(); // Hapus semua data sebelum seeding
 
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             DB::table('t_penjualan_detail')->insert([
                 'barang_id' => rand(1, 10),
                 'harga' => rand(50000, 100000),
