@@ -30,7 +30,11 @@
         <!-- Navbar -->
         @include('layouts.header')
         <!-- /.navbar -->
-
+        <li class="nav-item">
+            <a href="{{ url('logout') }}" class="nav-link text-danger" onclick="return confirm('Yakin ingin logout?')">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
