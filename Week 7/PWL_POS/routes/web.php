@@ -1,6 +1,5 @@
 <?php
 
-// Import semua controller yang akan digunakan
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
@@ -13,69 +12,56 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 
-// Menentukan pola parameter 'id' agar hanya menerima angka 0-9
 Route::pattern('id', '[0-9]+');
 
-// Route ke halaman login
 Route::get('login', [AuthController::class, 'login'])->name('login');
-// Proses login (form post)
 Route::post('login', [AuthController::class, 'postlogin']);
-// Logout, hanya bisa diakses jika user sudah login
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
-// Route ke halaman registrasi
 Route::get('register', [AuthController::class, 'register'])->name('register');
-// Proses registrasi (form post)
 Route::post('register', [AuthController::class, 'postRegister']);
 
-// Group route yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['auth'])->group(function () {
 
-    // Halaman utama (dashboard/welcome)
     Route::get('/', [WelcomeController::class, 'index']);
 
-    // Group route yang hanya bisa diakses oleh user dengan role 'ADM' (Admin)
     Route::middleware(['authorize:ADM'])->group(function () {
         Route::group(['prefix' => 'user'], function () {
-            Route::get('/', [UserController::class, 'index']); // Menampilkan daftar user
-            Route::post('/list', [UserController::class, 'list']); // Mengambil data list user
-            Route::get('/create', [UserController::class, 'create']); // Menampilkan form tambah user
-            Route::post('/', [UserController::class, 'store']); // Simpan user baru
-            Route::get('/create_ajax', [UserController::class, 'create_ajax']); // Form tambah user via ajax
-            Route::post('/ajax', [UserController::class, 'store_ajax']); // Simpan user via ajax
-            Route::get('/{id}', [UserController::class, 'show']); // Detail user
-            Route::get('/{id}/edit', [UserController::class, 'edit']); // Form edit user
-            Route::put('/{id}', [UserController::class, 'update']); // Update user
-            Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']); // Edit via ajax
-            Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']); // Update ajax
-            Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']); // Konfirmasi hapus ajax
-            Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']); // Hapus ajax
-            Route::delete('/{id}', [UserController::class, 'destroy']); // Hapus user
+            Route::get('/', [UserController::class, 'index']);
+            Route::post('/list', [UserController::class, 'list']);
+            Route::get('/create', [UserController::class, 'create']);
+            Route::post('/', [UserController::class, 'store']);
+            Route::get('/create_ajax', [UserController::class, 'create_ajax']);
+            Route::post('/ajax', [UserController::class, 'store_ajax']);
+            Route::get('/{id}', [UserController::class, 'show']);
+            Route::get('/{id}/edit', [UserController::class, 'edit']);
+            Route::put('/{id}', [UserController::class, 'update']);
+            Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']);
+            Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']);
+            Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']);
+            Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);
+            Route::delete('/{id}', [UserController::class, 'destroy']);
         });
     });
 
-    // Group route untuk Admin dan Manager
     Route::middleware(['authorize:ADM,MNG'])->group(function () {
-
-        // Prefix untuk route kategori
         Route::group(['prefix' => 'kategori'], function () {
-            Route::get('/', [KategoriController::class, 'index']); // Daftar kategori
-            Route::post('/list', [KategoriController::class, 'list']); // Data list kategori
-            Route::get('/create', [KategoriController::class, 'create']); // Form tambah
-            Route::post('/', [KategoriController::class, 'store']); // Simpan kategori
+            Route::get('/', [KategoriController::class, 'index']);
+            Route::post('/list', [KategoriController::class, 'list']);
+            Route::get('/create', [KategoriController::class, 'create']);
+            Route::post('/', [KategoriController::class, 'store']);
             Route::get('/create_ajax', [KategoriController::class, 'create_ajax']);
             Route::post('/ajax', [KategoriController::class, 'store_ajax']);
-            Route::get('/{id}', [KategoriController::class, 'show']); // Detail kategori
-            Route::get('/{id}/edit', [KategoriController::class, 'edit']); // Form edit
-            Route::put('/{id}', [KategoriController::class, 'update']); // Simpan update
+            Route::get('/{id}', [KategoriController::class, 'show']);
+            Route::get('/{id}/edit', [KategoriController::class, 'edit']);
+            Route::put('/{id}', [KategoriController::class, 'update']);
             Route::get('/{id}/edit_ajax', [KategoriController::class, 'edit_ajax']);
             Route::put('/{id}/update_ajax', [KategoriController::class, 'update_ajax']);
             Route::get('/{id}/delete_ajax', [KategoriController::class, 'confirm_ajax']);
             Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);
-            Route::delete('/{id}', [KategoriController::class, 'destroy']); // Hapus kategori
+            Route::delete('/{id}', [KategoriController::class, 'destroy']);
         });
 
-        // Prefix untuk route level (role user)
         Route::group(['prefix' => 'level'], function () {
             Route::get('/', [LevelController::class, 'index']);
             Route::post('/list', [LevelController::class, 'list']);
@@ -94,10 +80,7 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    // Group route untuk Admin, Manager, dan Staff
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
-
-        // Prefix untuk supplier
         Route::group(['prefix' => 'supplier'], function () {
             Route::get('/', [SupplierController::class, 'index']);
             Route::post('/list', [SupplierController::class, 'list']);
@@ -115,7 +98,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [SupplierController::class, 'destroy']);
         });
 
-        // Prefix untuk barang
         Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']);
             Route::post('/list', [BarangController::class, 'list']);
