@@ -416,73 +416,67 @@ class UserController extends Controller
         return $pdf->stream('Data User'.date('Y-m-d H:i:s').'.pdf');
     }
 
-    public function update_photo(Request $request)
-     {
-         // Validasi file
-         $request->validate([
-             'photo_profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-         ]);
- 
-         try {
-             $user = auth()->user();
- 
-             if (!$user) {
-                 return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
-             }
- 
-             $userId = $user->user_id;
- 
-             $userModel = UserModel::find($userId);
- 
-             if (!$userModel) {
-                 return redirect('/login')->with('error', 'User tidak ditemukan');
-             }
- 
-             // Menghapus foto jika sudah ada
-             if ($userModel->photo_profile && file_exists(storage_path('app/public/' . $userModel->photo_profile))) {
-                 Storage::disk('public')->delete($userModel->photo_profile);
-             }
- 
-             $fileName = 'profile_' . $userId . '_' . time() . '.' . $request->photo_profile->extension();
-             $path = $request->photo_profile->storeAs('profiles', $fileName, 'public');
- 
-             UserModel::where('user_id', $userId)->update([
-                 'photo_profile' => $path
-             ]);
- 
-             return redirect()->back()->with('success', 'Foto profile berhasil diperbarui');
-         } catch (\Exception $e) {
-             return redirect()->back()->with('error', 'Gagal mengupload foto: ' . $e->getMessage());
-         }
-     }
-
-     public function delete_photo()
+    public function profilePage()
     {
+        $user = auth()->user();
+        if (!$user) {
+           return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
+       }
+
+       $breadcrumb = (object) [
+           'title' => 'Profile User',
+           'list' => ['Home', 'Profile']
+       ];
+
+       $page = (object) [
+           'title' => 'Profil Pengguna'
+       ];
+
+       $activeMenu = 'profile';
+
+       return view('user.profile', compact('user', 'breadcrumb', 'page', 'activeMenu'));
+    }
+
+    //Menampilkan halaman form edit photo
+    public function editPhoto(Request $request)
+    {
+        // Validasi file
+        $request->validate([
+            'foto_profil' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
         try {
+
             $user = auth()->user();
 
             if (!$user) {
                 return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
             }
 
-            $userModel = UserModel::find($user->user_id);
+            $userId = $user->user_id;
 
-            if (!$userModel || !$userModel->photo_profile) {
-                return redirect()->back()->with('error', 'Tidak ada foto yang dapat dihapus');
+            $userModel = UserModel::find($userId);
+
+            if (!$userModel) {
+                return redirect('/login')->with('error', 'User tidak ditemukan');
             }
 
-            if (Storage::disk('public')->exists($userModel->photo_profile)) {
-                Storage::disk('public')->delete($userModel->photo_profile);
+            if ($userModel->foto_profil && file_exists(storage_path('app/public/' . $userModel->foto_profil))) {
+                Storage::disk('public')->delete($userModel->foto_profil);
             }
 
-            $userModel->update(['photo_profile' => null]);
+            $fileName = 'profile_' . $userId . '_' . time() . '.' . $request->foto_profil->extension();
+            $path = $request->foto_profil->storeAs('profiles', $fileName, 'public');
 
-            return redirect()->back()->with('success', 'Foto profil berhasil dihapus');
+            UserModel::where('user_id', $userId)->update([
+                'foto_profil' => $path
+            ]);
+
+            return redirect()->back()->with('success', 'Foto profile berhasil diperbarui');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus foto: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal mengupload foto: ' . $e->getMessage());
         }
     }
-   
     // public function index(){
 
     //     $user = UserModel::with('level')->get();
