@@ -442,7 +442,7 @@ class UserController extends Controller
     {
         // Validasi file
         $request->validate([
-            'foto_profil' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'user_profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
@@ -461,15 +461,15 @@ class UserController extends Controller
                 return redirect('/login')->with('error', 'User tidak ditemukan');
             }
 
-            if ($userModel->foto_profil && file_exists(storage_path('app/public/' . $userModel->foto_profil))) {
-                Storage::disk('public')->delete($userModel->foto_profil);
+            if ($userModel->user_profile_picture && file_exists(storage_path('app/public/' . $userModel->user_profile_picture))) {
+                Storage::disk('public')->delete($userModel->user_profile_picture);
             }
 
-            $fileName = 'profile_' . $userId . '_' . time() . '.' . $request->foto_profil->extension();
-            $path = $request->foto_profil->storeAs('profiles', $fileName, 'public');
+            $fileName = 'profile_' . $userId . '_' . time() . '.' . $request->user_profile_picture->extension();
+            $path = $request->user_profile_picture->storeAs('profiles', $fileName, 'public');
 
             UserModel::where('user_id', $userId)->update([
-                'foto_profil' => $path
+                'user_profile_picture' => $path
             ]);
 
             return redirect()->back()->with('success', 'Foto profile berhasil diperbarui');

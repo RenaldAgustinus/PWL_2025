@@ -46,9 +46,7 @@ Route::post('/register', [AuthController::class, 'postregister']);
 Route::middleware(['auth'])->group(function(){
 
     Route::get('/',[WelcomeController::class,'index']);
-    Route::get('/profile', [UserController::class, 'profilePage']);
-    Route::post('/user/editPhoto', [UserController::class, 'editPhoto']);
-
+ 
 Route::middleware(['authorize:ADM'])->group(function() {
 Route::group(['prefix'=>'user'], function(){
     Route::get('/',[UserController::class,'index']); // Halaman Utama
@@ -69,6 +67,9 @@ Route::group(['prefix'=>'user'], function(){
     Route::post('/import_ajax',[UserController::class,'import_ajax']); // Import Excel (Ajax)
     Route::get('/export_excel',[UserController::class,'export_excel']); // Export Excel
     Route::get('/export_pdf',[UserController::class, 'export_pdf']); // Export PDF
+    Route::get('/profile', [UserController::class, 'profilePage']);
+    Route::post('/user/editPhoto', [UserController::class, 'editPhoto']);
+
 });
 });
 

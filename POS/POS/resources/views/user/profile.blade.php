@@ -8,18 +8,18 @@
   <div class="card-body">
       <div class="row">
           <div class="col-md-4 text-center">
-              <img src="{{ $user->foto_profil ? asset('storage/'.$user->foto_profil) : asset('img/default-profile.png') }}"
+              <img src="{{ $user->user_profile_picture ? asset('storage/'.$user->user_profile_picture) : asset('img/default-profile.png') }}"
                   class="img-circle elevation-2" alt="User Image" style="width: 200px; height: 200px; object-fit: cover;">
               <form action="{{ url('/user/editPhoto') }}" method="POST" enctype="multipart/form-data" class="mt-3">
                   @csrf
                   <div class="form-group">
                       <div class="input-group">
                           <div class="custom-file">
-                              <input type="file" class="custom-file-input" id="foto_profil" name="foto_profil" accept="image/*">
-                              <label class="custom-file-label" for="foto_profil">Pilih Foto</label>
+                              <input type="file" class="custom-file-input" id="user_profile_picture" name="user_profile_picture" accept="image/*">
+                              <label class="custom-file-label" for="user_profile_picture">Pilih Foto</label>
                           </div>
                       </div>
-                      @error('foto_profil')
+                      @error('user_profile_picture')
                           <small class="text-danger">{{ $message }}</small>
                       @enderror
                   </div>
@@ -52,7 +52,7 @@
 <script>
   // Script untuk menampilkan nama file yang dipilih
   $(document).ready(function() {
-      $('#foto_profil').on('change', function() {
+      $('#user_profile_picture').on('change', function() {
           // Dapatkan nama file
           var fileName = $(this).val().split('\\').pop();
           // Ganti label dengan nama file
